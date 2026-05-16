@@ -21,20 +21,47 @@
             user-select: none;
         }
 
-        #learning-banner {
+        #instruction-banner {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
+            background: #A65D6A;
+            color: #F2F2F2;
             text-align: center;
-            padding: 15px 0;
-            font-size: 1.4rem;
-            font-weight: 900;
-            z-index: 30;
-            border-bottom: 3px solid #2ecc71;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 5px 0;
+            font-size: 1rem;
+            font-weight: 700;
+            z-index: 40;
+        }
+
+        #motivation-msg {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #731018;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 40;
+        }
+
+        #sky-sun {
+            position: absolute;
+            top: 2%;
+            right: 5%;
+            width: 80px;
+            height: auto;
+            z-index: 10;
+        }
+
+        .sky-cloud {
+            position: absolute;
+            width: 120px;
+            height: auto;
+            z-index: 15;
+            opacity: 0.8;
         }
 
         #game-world {
@@ -148,17 +175,6 @@
             border: 2px solid #f1c40f;
         }
 
-        #phase-msg {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            color: #3e2723;
-            font-size: 1.8rem;
-            text-align: center;
-            font-weight: 900;
-        }
-
         #center-warning {
             position: absolute;
             top: 35%;
@@ -183,7 +199,6 @@
             font-size: 4rem;
             font-weight: 900;
             color: #ffd700;
-            text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.8);
             pointer-events: none;
             z-index: 100;
             animation: floatUpPoints 1s ease-out forwards;
@@ -217,7 +232,6 @@
             z-index: 60;
             opacity: 0;
             text-align: center;
-            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
         @keyframes flashRed {
@@ -349,7 +363,13 @@
 
 <body>
 
-    <div id="learning-banner" class="hidden"><span id="banner-text"></span></div>
+    <div id="instruction-banner">השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות ולהימנע מפצצות</div>
+    <div id="motivation-msg" class="hidden">כשהפעולות משפיעות על המשחק, המוטיבציה עולה.</div>
+
+    <img src="sun.png" id="sky-sun" alt="Sun">
+    <img src="cloud.png" class="sky-cloud" style="top: 5%; left: 10%;" alt="Cloud">
+    <img src="cloud.png" class="sky-cloud" style="top: 15%; left: 70%;" alt="Cloud">
+    <img src="cloud.png" class="sky-cloud" style="top: 8%; left: 45%; transform: scale(0.8);" alt="Cloud">
 
     <div id="game-world">
         <div id="flash-overlay"></div>
@@ -357,7 +377,6 @@
 
     <div id="ui-layer">
         <div id="score-box" class="status-box hidden">אוצר: <span id="score-val" style="color: #f1c40f;">0</span></div>
-        <div id="phase-msg">השתמשו בחיצי המקלדת כדי לנווט את הספינה</div>
     </div>
 
     <div id="center-warning">ההגה לא מגיב לפעולה שלך!</div>
@@ -375,7 +394,9 @@
         <div id="dialog-content" class="dialog-box">
             <h2>מוכנים לצאת לים הפתוח?</h2>
             <p>בואו נרגיש איך זה לנווט בספינה שלנו.</p>
-            <p style="font-size: 1rem; color: #666;">(השתמשו בחיצי המקלדת ימינה ושמאלה)</p>
+            <p style="font-size: 1rem; color: #666;"> השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות<br>ולהימנע
+                מפצצות
+            </p>
             <button class="btn" onclick="startPhase1()">הפלגנו!</button>
         </div>
     </div>
@@ -389,11 +410,9 @@
         const dialogContent = document.getElementById('dialog-content');
         const scoreBox = document.getElementById('score-box');
         const scoreVal = document.getElementById('score-val');
-        const phaseMsg = document.getElementById('phase-msg');
         const centerWarning = document.getElementById('center-warning');
         const encFeedback = document.getElementById('encouragement-text');
-        const learningBanner = document.getElementById('learning-banner');
-        const bannerText = document.getElementById('banner-text');
+        const motivationMsg = document.getElementById('motivation-msg');
 
         let state = 'init';
         let worldX = 0; let visualWheelRot = 0; let score = 0; let objects = [];
@@ -419,9 +438,8 @@
 
         function startPhase1() {
             dialogOverlay.classList.add('hidden'); state = 'phase1';
-            scoreBox.classList.add('hidden'); learningBanner.classList.add('hidden');
+            scoreBox.classList.add('hidden'); motivationMsg.classList.add('hidden');
             centerWarning.classList.remove('warning-active');
-            phaseMsg.innerText = "השתמשו בחיצי המקלדת כדי לנווט את הספינה";
             resetWorld();
             phaseTimer = 0; phase1Timer = 0; spawnTimer = 500; lastTime = performance.now(); warningTimer = 0;
             if (!animationId) animationId = requestAnimationFrame(gameLoop);
@@ -443,22 +461,20 @@
         function startPhase2() {
             dialogOverlay.classList.add('hidden'); state = 'phase2';
             score = 0; scoreVal.innerText = score; scoreBox.classList.remove('hidden');
-            phaseMsg.innerText = "נווטו את הספינה בעזרת חיצי המקלדת!";
-            learningBanner.classList.remove('hidden');
-            bannerText.innerHTML = "כשהפעולות משפיעות על המשחק, המוטיבציה עולה.";
+            motivationMsg.classList.remove('hidden');
             resetWorld(); phaseTimer = 0; spawnTimer = 0; lastTime = performance.now();
         }
 
         function endGame() {
-            state = 'end'; learningBanner.classList.add('hidden');
+            state = 'end'; motivationMsg.classList.add('hidden');
             centerWarning.classList.remove('warning-active');
             dialogContent.innerHTML = `
-                <h2>עוגן למחשבה (רפלקציה)</h2>
+                <h2>עוגן למחשבה</h2>
                 <p style="font-size: 1.1rem; text-align: right; font-weight: normal; margin-bottom: 10px;">
                 שמתם לב להבדל בתחושה? בחלק הראשון לא משנה מה עשיתם - הספינה בחרה מסלול משלה. <br><br>
-                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו יוצרת סוכנות (Agency) שמחזקת את המוטיבציה הפנימית להמשיך.
+                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו נותנת ללומד תחושת שליטה שמחזקת את המוטיבציה הפנימית שלו להמשיך.
                 </p>
-                <button class="btn" style="margin-top:15px;" onclick="location.reload()">סיום התנסות</button>
+                <button class="btn" style="margin-top:15px;" onclick="location.reload()">סיום המשחק</button>
             `;
             dialogOverlay.classList.remove('hidden');
         }
@@ -643,7 +659,7 @@
             encFeedback.classList.add('anim-float');
         }
 
-        const encouragements = ["איסוף יפה!", "המשך כך!", "מעולה!", "נאסף!", "כל הכבוד!"];
+        const encouragements = ["איסוף יפה!", "ככה נראית שליטה!", "מעולה!", "נאסף!", "כל הכבוד!"];
     </script>
 </body>
 
