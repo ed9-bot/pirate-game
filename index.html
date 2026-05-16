@@ -105,10 +105,6 @@
             background: url('chest.png') center bottom / contain no-repeat;
         }
 
-        .candy {
-            background: url('candy.png') center bottom / contain no-repeat;
-        }
-
         #dashboard {
             position: absolute;
             bottom: -50px;
@@ -128,7 +124,7 @@
 
         #ship-deck {
             position: absolute;
-            bottom: 0;
+            bottom: 30px;
             width: 120%;
             max-width: 900px;
             height: 350px;
@@ -556,9 +552,8 @@
                 if (state === 'phase1') {
                     type = rand > 0.4 ? 'obstacle' : 'collectible';
                 } else {
-                    if (rand < 0.4) type = 'obstacle';
-                    else if (rand < 0.7) type = 'collectible';
-                    else type = 'candy';
+                    if (rand < 0.5) type = 'obstacle';
+                    else type = 'collectible';
                 }
 
                 let spawnX = (state === 'phase1') ? worldX + (Math.random() * 20 - 10) : (Math.random() * 80) - 40;
@@ -625,7 +620,7 @@
                     score = Math.max(0, score - 5);
                     scoreVal.innerText = score;
                 }
-            } else if (type === 'collectible' || type === 'candy') {
+            } else if (type === 'collectible') {
                 // הצגת הניקוד בדיוק במיקום שהפריט נעלם!
                 showPointsNextToObj(vLeft, vTop, "+10");
 
