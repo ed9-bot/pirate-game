@@ -489,7 +489,7 @@
                 <h2>עוגן למחשבה</h2>
                 <p style="font-size: 1.1rem; text-align: right; font-weight: normal; margin-bottom: 10px;">
                 שמתם לב להבדל בתחושה? בחלק הראשון לא משנה מה עשיתם הספינה בחרה מסלול משלה. <br><br>
-                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו יוצרת סוכנות שמחזקת את המוטיבציה הפנימית להמשיך.
+                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו יוצרת עצמאות ותחושת שליטה, המחזקים את המוטיבציה הפנימית להמשיך.
                 </p>
                 <div style="text-align: center;">
                     <p style="font-size: 1.3rem; line-height: 1.5; margin-bottom: 25px; font-weight: bold;">
@@ -584,7 +584,7 @@
                     else type = 'collectible';
                 }
 
-                let spawnX = (state === 'phase1') ? worldX + (Math.random() * 20 - 10) : (Math.random() * 80) - 40;
+                let spawnX = (Math.random() * 80) - 40;
 
                 const el = document.createElement('div');
                 el.className = `world-object ${type}`;
