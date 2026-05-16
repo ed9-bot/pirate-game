@@ -351,6 +351,27 @@
             transform: translateY(4px);
         }
 
+        .btn-primary-underline {
+            background: none;
+            border: none;
+            color: #d35400;
+            text-decoration: underline;
+            font-size: 1.4rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary-underline:hover {
+            color: #a04000;
+        }
+
+        .btn-primary-underline:active {
+            opacity: 0.7;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -467,10 +488,17 @@
             dialogContent.innerHTML = `
                 <h2>עוגן למחשבה</h2>
                 <p style="font-size: 1.1rem; text-align: right; font-weight: normal; margin-bottom: 10px;">
-                שמתם לב להבדל בתחושה? בחלק הראשון לא משנה מה עשיתם - הספינה בחרה מסלול משלה. <br><br>
-                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו נותנת ללומד תחושת שליטה שמחזקת את המוטיבציה הפנימית שלו להמשיך.
+                שמתם לב להבדל בתחושה? בחלק הראשון לא משנה מה עשיתם הספינה בחרה מסלול משלה. <br><br>
+                למידה מבוססת משחק אמיתית דורשת מהמערכת <b>להגיב לבחירות של הלומד</b>. התגובה הזו יוצרת סוכנות שמחזקת את המוטיבציה הפנימית להמשיך.
                 </p>
-                <button class="btn" style="margin-top:15px;" onclick="location.reload()">סיום המשחק</button>
+                <div style="text-align: center;">
+                    <p style="font-size: 1.3rem; line-height: 1.5; margin-bottom: 25px; font-weight: bold;">
+                        סיימת והרווחת מטבעות! הם מחכים לך כאן למטה, יחד עם רפלקציה קצרה.
+                    </p>
+                </div>
+                <div style="text-align: left; margin-top: 20px;">
+                    <button class="btn-primary-underline" onclick="location.reload()">סיום המשחק</button>
+                </div>
             `;
             dialogOverlay.classList.remove('hidden');
         }
