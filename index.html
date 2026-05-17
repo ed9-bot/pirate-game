@@ -72,9 +72,10 @@
             height: 100vh;
             overflow: hidden;
             background-image: url('water.png');
-            background-size: 100% 100%;
+            background-size: 150% 100%;
             background-repeat: no-repeat;
-            background-position: center top;
+            background-position: calc(50% + (var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.25) top;
+            transform: translateY(calc(var(--world-shift-y, 0px) * 0.6));
         }
 
         #flash-overlay {
@@ -297,11 +298,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(4, 18, 33, 0.85);
+            background: transparent;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 100;
+            transition: background 0.3s;
+        }
+
+        .dark-overlay {
+            background: rgba(4, 18, 33, 0.85) !important;
         }
 
         .dialog-box {
@@ -317,7 +323,7 @@
             width: 90%;
             max-width: 500px;
             color: #3e2723;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            box-shadow: none;
         }
 
         .dialog-box h2 {
@@ -383,10 +389,10 @@
     <div id="instruction-banner">השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות ולהימנע מפצצות</div>
     <div id="motivation-msg" class="hidden">כשהפעולות משפיעות על המשחק, המוטיבציה עולה.</div>
 
-    <img src="sun.png" id="sky-sun" alt="Sun">
-    <img src="cloud.png" class="sky-cloud" style="top: 5%; left: 10%;" alt="Cloud">
-    <img src="cloud.png" class="sky-cloud" style="top: 15%; left: 70%;" alt="Cloud">
-    <img src="cloud.png" class="sky-cloud" style="top: 8%; left: 45%; transform: scale(0.8);" alt="Cloud">
+    <img src="sun.png" id="sky-sun" style="transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.1), calc(var(--world-shift-y, 0px) * 0.2));" alt="Sun">
+    <img src="cloud.png" class="sky-cloud" style="top: 5%; left: 10%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.4), calc(var(--world-shift-y, 0px) * 0.3));" alt="Cloud">
+    <img src="cloud.png" class="sky-cloud" style="top: 15%; left: 70%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.7), calc(var(--world-shift-y, 0px) * 0.4));" alt="Cloud">
+    <img src="cloud.png" class="sky-cloud" style="top: 8%; left: 45%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.5), calc(var(--world-shift-y, 0px) * 0.35)) scale(0.8);" alt="Cloud">
 
     <div id="game-world">
         <div id="flash-overlay"></div>
@@ -465,6 +471,7 @@
         function triggerTransition() {
             state = 'transition'; keys.left = false; keys.right = false;
             centerWarning.classList.remove('warning-active');
+            dialogOverlay.classList.add('dark-overlay');
             dialogContent.innerHTML = `
                 <h2>איי איי קפטן?</h2>
                 <p>שמת לב כמה זה מתסכל כאשר הבחירות שלך לא משפיעות על מה שקורה?</p>
@@ -485,6 +492,7 @@
         function endGame() {
             state = 'end'; motivationMsg.classList.add('hidden');
             centerWarning.classList.remove('warning-active');
+            dialogOverlay.classList.add('dark-overlay');
             dialogContent.innerHTML = `
                 <h2>עוגן למחשבה</h2>
                 <p style="font-size: 1.1rem; text-align: right; font-weight: normal; margin-bottom: 10px;">
@@ -493,7 +501,8 @@
                 </p>
                 <div style="text-align: center;">
                     <p style="font-size: 1.3rem; line-height: 1.5; margin-bottom: 25px; font-weight: bold;">
-                        סיימת והרווחת מטבעות! הם מחכים לך כאן למטה, יחד עם רפלקציה קצרה.
+                        סיימת והרווחת מטבעות! הם מחכים לך כאן למטה, יחד עם סיכום קצר
+                        <img src="coin.png" alt="Coin" style="width: 24px; vertical-align: middle; margin-right: 8px;">
                     </p>
                 </div>
                 <div style="text-align: left; margin-top: 20px;">
@@ -509,12 +518,23 @@
         }
 
         function gameLoop(time) {
+            // Idle sway for water and clouds (always running)
+            let idleSwayX = Math.sin(time / 2000) * 3; // +/- 3vw
+            let idleSwayY = Math.cos(time / 1500) * 6; // +/- 6px
+            document.documentElement.style.setProperty('--idle-sway-x', `${idleSwayX}vw`);
+            document.documentElement.style.setProperty('--world-shift-y', `${idleSwayY}px`);
+
             if (state === 'transition' || state === 'end') {
                 lastTime = time; animationId = requestAnimationFrame(gameLoop); return;
             }
 
             let dt = time - lastTime; lastTime = time;
             if (dt > 100) dt = 16;
+
+            if (state === 'init') {
+                animationId = requestAnimationFrame(gameLoop);
+                return;
+            }
 
             phaseTimer += dt;
 
@@ -565,6 +585,8 @@
 
             const wheelImg = wheel.querySelector('img');
             if (wheelImg) wheelImg.style.transform = `rotate(${visualWheelRot}deg)`;
+            
+            document.documentElement.style.setProperty('--steer-shift', `${-worldX}vw`);
         }
 
         function handleSpawns(dt) {
@@ -683,6 +705,10 @@
         }
 
         const encouragements = ["איסוף יפה!", "ככה נראית שליטה!", "מעולה!", "נאסף!", "כל הכבוד!"];
+
+        // Start idle animation immediately
+        lastTime = performance.now();
+        animationId = requestAnimationFrame(gameLoop);
     </script>
 </body>
 
