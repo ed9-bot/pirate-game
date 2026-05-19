@@ -8,6 +8,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
 
+        @font-face {
+            font-family: 'Aloja';
+            src: url('aloja.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
         body,
         html {
             margin: 0;
@@ -332,6 +340,13 @@
             color: #8b3a00;
         }
 
+        .game-title {
+            font-family: 'Aloja', sans-serif !important;
+            color: #264f73 !important;
+            font-size: 3.2rem !important;
+            margin: 0 0 15px 0;
+        }
+
         .dialog-box p {
             font-size: 1.3rem;
             line-height: 1.5;
@@ -415,7 +430,7 @@
 
     <div id="dialog-overlay">
         <div id="dialog-content" class="dialog-box">
-            <h2>מוכנים לצאת לים הפתוח?</h2>
+            <h2 class="game-title">The Ghost Wheel</h2>
             <p>בואו נרגיש איך זה לנווט בספינה שלנו.</p>
             <p style="font-size: 1rem; color: #666;"> השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות<br>ולהימנע
                 מפצצות
