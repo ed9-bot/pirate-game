@@ -8,21 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
 
-        @font-face {
-            font-family: 'Aloja';
-            src: url('aloja.woff2') format('woff2');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-
         body,
         html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: 'Heebo', sans-serif;
+            font-family: 'Rubik', sans-serif;
             background: url('texture.png') center top / cover no-repeat #f4e4bc;
             overflow: hidden;
             touch-action: none;
@@ -340,13 +332,6 @@
             color: #8b3a00;
         }
 
-        .game-title {
-            font-family: 'Aloja', sans-serif !important;
-            color: #264f73 !important;
-            font-size: 3.2rem !important;
-            margin: 0 0 15px 0;
-        }
-
         .dialog-box p {
             font-size: 1.3rem;
             line-height: 1.5;
@@ -393,6 +378,33 @@
             opacity: 0.7;
         }
 
+        #mute-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #fce0a2, #dfa95c);
+            border: 2px solid #3e2723;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 80;
+            color: #3e2723;
+            transition: transform 0.1s;
+        }
+        #mute-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        #mute-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -404,10 +416,18 @@
     <div id="instruction-banner">השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות ולהימנע מפצצות</div>
     <div id="motivation-msg" class="hidden">כשהפעולות משפיעות על המשחק, המוטיבציה עולה.</div>
 
-    <img src="sun.png" id="sky-sun" style="transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.1), calc(var(--world-shift-y, 0px) * 0.2));" alt="Sun">
-    <img src="cloud.png" class="sky-cloud" style="top: 5%; left: 10%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.4), calc(var(--world-shift-y, 0px) * 0.3));" alt="Cloud">
-    <img src="cloud.png" class="sky-cloud" style="top: 15%; left: 70%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.7), calc(var(--world-shift-y, 0px) * 0.4));" alt="Cloud">
-    <img src="cloud.png" class="sky-cloud" style="top: 8%; left: 45%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.5), calc(var(--world-shift-y, 0px) * 0.35)) scale(0.8);" alt="Cloud">
+    <img src="sun.png" id="sky-sun"
+        style="transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.1), calc(var(--world-shift-y, 0px) * 0.2));"
+        alt="Sun">
+    <img src="cloud.png" class="sky-cloud"
+        style="top: 5%; left: 10%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.4), calc(var(--world-shift-y, 0px) * 0.3));"
+        alt="Cloud">
+    <img src="cloud.png" class="sky-cloud"
+        style="top: 15%; left: 70%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.7), calc(var(--world-shift-y, 0px) * 0.4));"
+        alt="Cloud">
+    <img src="cloud.png" class="sky-cloud"
+        style="top: 8%; left: 45%; transform: translate(calc((var(--steer-shift, 0vw) + var(--idle-sway-x, 0vw)) * 0.5), calc(var(--world-shift-y, 0px) * 0.35)) scale(0.8);"
+        alt="Cloud">
 
     <div id="game-world">
         <div id="flash-overlay"></div>
@@ -415,6 +435,13 @@
 
     <div id="ui-layer">
         <div id="score-box" class="status-box hidden">אוצר: <span id="score-val" style="color: #f1c40f;">0</span></div>
+    </div>
+
+    <div id="mute-btn" onclick="toggleMute()">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
     </div>
 
     <div id="center-warning">ההגה לא מגיב לפעולה שלך!</div>
@@ -430,11 +457,8 @@
 
     <div id="dialog-overlay">
         <div id="dialog-content" class="dialog-box">
-            <h2 class="game-title">The Ghost Wheel</h2>
+            <h2>מוכנים לצאת לים הפתוח?</h2>
             <p>בואו נרגיש איך זה לנווט בספינה שלנו.</p>
-            <p style="font-size: 1rem; color: #666;"> השתמשו בחיצי המקלדת ימינה ושמאלה כדי לאסוף אוצרות<br>ולהימנע
-                מפצצות
-            </p>
             <button class="btn" onclick="startPhase1()">הפלגנו!</button>
         </div>
     </div>
@@ -463,6 +487,61 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
         }
 
+        let isMuted = false;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const muteBtn = document.getElementById('mute-btn');
+            if (isMuted) {
+                muteBtn.innerHTML = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                </svg>`;
+            } else {
+                initAudio();
+                muteBtn.innerHTML = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>`;
+            }
+        }
+
+        function playTone(freq, type, duration, vol = 0.1) {
+            if (isMuted || !audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playPositiveSound() {
+            if (isMuted) return;
+            initAudio();
+            playTone(440, 'sine', 0.1, 0.1);
+            setTimeout(() => playTone(554.37, 'sine', 0.1, 0.1), 100);
+            setTimeout(() => playTone(659.25, 'sine', 0.2, 0.1), 200);
+        }
+
+        function playNegativeSound() {
+            if (isMuted) return;
+            initAudio();
+            playTone(200, 'triangle', 0.2, 0.1);
+            setTimeout(() => playTone(150, 'triangle', 0.3, 0.1), 150);
+        }
+
         const keys = { left: false, right: false };
         window.addEventListener('keydown', e => {
             initAudio();
@@ -489,9 +568,11 @@
             dialogOverlay.classList.add('dark-overlay');
             dialogContent.innerHTML = `
                 <h2>איי איי קפטן?</h2>
-                <p>שמת לב כמה זה מתסכל כאשר הבחירות שלך לא משפיעות על מה שקורה?</p>
-                <p style="font-size: 1.1rem; font-weight: normal;">במשחקים, ברגע שהסביבה לא מגיבה לפעולות שלנו, תחושת המעורבות הולכת לאיבוד.</p>
-                <p><strong>כעת השליטה באמת שלך , קפטן!</strong></p>
+                <div style="text-align: right;">
+                    <p>שמת לב כמה זה מתסכל כאשר הבחירות שלך לא משפיעות על מה שקורה?</p>
+                    <p style="font-size: 1.1rem; font-weight: normal;">במשחקים, ברגע שהסביבה לא מגיבה לפעולות שלנו, תחושת המעורבות הולכת לאיבוד.</p>
+                    <p><strong>כעת השליטה באמת שלך , קפטן!</strong></p>
+                </div>
                 <button class="btn" onclick="startPhase2()">המשך</button>
             `;
             dialogOverlay.classList.remove('hidden');
@@ -600,7 +681,7 @@
 
             const wheelImg = wheel.querySelector('img');
             if (wheelImg) wheelImg.style.transform = `rotate(${visualWheelRot}deg)`;
-            
+
             document.documentElement.style.setProperty('--steer-shift', `${-worldX}vw`);
         }
 
@@ -673,6 +754,7 @@
 
         function handleCollision(type, vLeft, vTop) {
             if (type === 'obstacle') {
+                playNegativeSound();
                 flashOverlay.classList.remove('anim-flash-red');
                 void flashOverlay.offsetWidth;
                 flashOverlay.classList.add('anim-flash-red');
@@ -686,6 +768,7 @@
                     scoreVal.innerText = score;
                 }
             } else if (type === 'collectible') {
+                playPositiveSound();
                 // הצגת הניקוד בדיוק במיקום שהפריט נעלם!
                 showPointsNextToObj(vLeft, vTop, "+10");
 
